@@ -1,6 +1,8 @@
 name: ci
 
 on:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
 
@@ -42,6 +44,6 @@ jobs:
 
       - name: Check linting
         run: test -z $(staticcheck ./...)
-        
+
       - name: Checking formatting
         run: test -z $(go fmt ./...)
