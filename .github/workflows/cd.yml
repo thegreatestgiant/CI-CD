@@ -20,3 +20,14 @@ jobs:
 
       - name: Build App
         run: ./scripts/buildprod.sh
+
+      - id: "auth"
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
+
+      - name: "Build and push to GCP"
+        run: "gcloud builds submit --tag us-east4-docker.pkg.dev/notley-400302/notely-ar-repo/thegreatestgiant/notley:latest ."
