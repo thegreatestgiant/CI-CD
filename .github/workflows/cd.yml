@@ -14,6 +14,8 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: "1.21"
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Check out code
         uses: actions/checkout@v3
@@ -31,6 +33,12 @@ jobs:
 
       - name: "Build and push to GCP"
         run: "gcloud builds submit --tag us-east4-docker.pkg.dev/notley-400302/notely-ar-repo/thegreatestgiant/notely:latest ."
+
+      - name: Install goose
+        run: go install github.com/pressly/goose/v3/cmd/goose@latest
+
+      - name: Run migrations
+        run: ./scripts/migrateup.sh
 
       - name: "Deploy to Cloud Run"
         run: gcloud run deploy notely --image us-east4-docker.pkg.dev/notley-400302/notely-ar-repo/thegreatestgiant/notely:latest --region us-east4 --allow-unauthenticated --project notley-400302 --max-instances=4
